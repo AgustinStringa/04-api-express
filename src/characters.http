@@ -1,0 +1,23 @@
+
+
+# GET http://localhost:3000/api/characters
+
+
+# 
+GET http://localhost:3000/api/characters/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+
+#
+POST http://localhost:3000/api/characters
+Content-Type: application/json
+
+{
+        "name": "Obi-Wan Kenobi",
+        "characterClass": "Jedi",
+        "level": 12,
+        "hp": 165,
+        "mana": 30,
+        "attack": 12,
+        "items": [
+            "Lightsaber"
+        ]    
+}

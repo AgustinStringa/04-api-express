@@ -1,10 +1,11 @@
 import express from "express";
-
+import { routerApi } from "./routes/index.js";
+const PORT = 3000;
 const app = express();
-app.use("/*", (req, res) => {
-  res.send("Hello Web");
-});
+app.use(express.json());
 
-app.listen(3000, () => {
-  console.log("listening");
+routerApi(app);
+
+app.listen(PORT, () => {
+  console.log(`listening at port http://localhost:${PORT}`);
 });
