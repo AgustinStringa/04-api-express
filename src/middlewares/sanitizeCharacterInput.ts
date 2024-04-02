@@ -17,6 +17,7 @@ function sanitizeCharacterInput(
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined) {
+      //!req.body.sanitized podria hacer true algun valor falsy como null, que en algun contexto puede ser no deseado
       delete req.body.sanitizedInput[key];
     }
   });
