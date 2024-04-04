@@ -1,5 +1,5 @@
 import express, { Application } from "express";
-import { characters_router } from "./characters.js";
+import { characters_router } from "../character/Character.routes.js";
 
 function routerApi(app: Application) {
   const routerv1 = express.Router();
