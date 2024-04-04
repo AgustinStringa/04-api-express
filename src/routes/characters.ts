@@ -73,6 +73,18 @@ characters_router.patch("/:id", sanitizeCharacterInput, (req, res) => {
   }
 });
 
+characters_router.patch("/:id", sanitizeCharacterInput, (req, res) => {
+  const characterIdx = characters.findIndex((c) => c.id === req.params.id);
+  if (characterIdx === -1) {
+    res.send({ message: "character not found" }).status(404);
+  } else {
+    Object.assign(characters[characterIdx], req.body.sanitizedInput);
+  }
+  res
+    .status(200)
+    .send({ message: "character updated", data: characters[characterIdx] });
+});
+
 characters_router.delete("/:id", (req, res) => {
   const { id } = req.params;
   const characterIdx = characters.findIndex((c) => c.id === id);
