@@ -20,7 +20,7 @@ characters_router.get("/:id", (req, res) => {
   const { id } = req.params;
   const character = characters.find((c) => c.id === id);
   if (!character) {
-    res.status(404).send("character not found");
+    res.status(404).send({ message: "character not found" });
   } else {
     res.send({ data: character }).status(200);
   }
@@ -55,10 +55,10 @@ characters_router.put("/:id", sanitizeCharacterInput, (req, res) => {
       ...characters[characterIdx],
       ...req.body.sanitizedInput,
     };
+    res
+      .status(200)
+      .send({ message: "character updated", data: characters[characterIdx] });
   }
-  res
-    .status(200)
-    .send({ message: "character updated", data: characters[characterIdx] });
 });
 
 characters_router.patch("/:id", sanitizeCharacterInput, (req, res) => {
@@ -67,10 +67,10 @@ characters_router.patch("/:id", sanitizeCharacterInput, (req, res) => {
     res.send({ message: "character not found" }).status(404);
   } else {
     Object.assign(characters[characterIdx], req.body.sanitizedInput);
+    res
+      .status(200)
+      .send({ message: "character updated", data: characters[characterIdx] });
   }
-  res
-    .status(200)
-    .send({ message: "character updated", data: characters[characterIdx] });
 });
 
 characters_router.delete("/:id", (req, res) => {
