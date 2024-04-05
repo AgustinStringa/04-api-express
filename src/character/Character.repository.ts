@@ -28,9 +28,22 @@ export class CharacterRepository implements Repository<Character> {
     return item;
   }
   update(item: Character): Character | undefined {
-    throw new Error("Method not implemented.");
+    const characterIdx = characters.findIndex((c) => c.id === item.id);
+    if (characterIdx !== -1) {
+      characters[characterIdx] = {
+        ...characters[characterIdx],
+        ...item,
+      };
+      return characters[characterIdx];
+    }
   }
   delete(item: { id: string }): Character | undefined {
-    throw new Error("Method not implemented.");
+    const characterIdx = characters.findIndex((c) => c.id === item.id);
+
+    if (characterIdx !== -1) {
+      const characterToRemove = characters[characterIdx];
+      characters.splice(characterIdx, 1);
+      return characterToRemove;
+    }
   }
 }

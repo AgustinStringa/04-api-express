@@ -1,12 +1,13 @@
 import express from "express";
 import { sanitizeCharacterInput } from "../middlewares/sanitizeCharacterInput.js";
 import { Character } from "./Character.entity.js";
-import { characters } from "./Character.repository.js";
+import { CharacterRepository } from "./Character.repository.js";
 const characters_router = express.Router();
 
+const repository = new CharacterRepository();
 characters_router.get("/:id", (req, res) => {
   const { id } = req.params;
-  const character = characters.find((c) => c.id === id);
+  const character = repository.findOne({ id: id });
   if (!character) {
     res.status(404).send({ message: "character not found" });
   } else {
@@ -14,62 +15,47 @@ characters_router.get("/:id", (req, res) => {
   }
 });
 characters_router.get("/", (req, res) => {
-  res.send({ data: characters });
+  res.send({ data: repository.findAll() });
 });
 
 characters_router.post("/", sanitizeCharacterInput, (req, res) => {
   const { name, characterClass, level, hp, mana, attack, items } =
     req.body.sanitizedInput;
-  const newCharacter = new Character(
-    name,
-    characterClass,
-    level,
-    hp,
-    mana,
-    attack,
-    items
+  const newCharacter = repository.add(
+    new Character(name, characterClass, level, hp, mana, attack, items)
   );
-  characters.push(newCharacter);
   //another common response is id
   res.send({ message: "character created", data: newCharacter }).status(201);
 });
 
 characters_router.put("/:id", sanitizeCharacterInput, (req, res) => {
-  const characterIdx = characters.findIndex((c) => c.id === req.params.id);
-  if (characterIdx === -1) {
+  req.body.sanitizedInput.id = req.params.id;
+  const character = repository.update(req.body.sanitizedInput);
+  if (!character) {
     res.send({ message: "character not found" }).status(404);
   } else {
-    characters[characterIdx] = {
-      ...characters[characterIdx],
-      ...req.body.sanitizedInput,
-    };
-    res
-      .status(200)
-      .send({ message: "character updated", data: characters[characterIdx] });
+    res.status(200).send({ message: "character updated", data: character });
   }
 });
 
 characters_router.patch("/:id", sanitizeCharacterInput, (req, res) => {
-  const characterIdx = characters.findIndex((c) => c.id === req.params.id);
-  if (characterIdx === -1) {
+  req.body.sanitizedInput.id = req.params.id;
+  const character = repository.update(req.body.sanitizedInput);
+  if (!character) {
     res.send({ message: "character not found" }).status(404);
   } else {
-    Object.assign(characters[characterIdx], req.body.sanitizedInput);
-    res
-      .status(200)
-      .send({ message: "character updated", data: characters[characterIdx] });
+    res.status(200).send({ message: "character updated", data: character });
   }
 });
 
 characters_router.delete("/:id", (req, res) => {
   const { id } = req.params;
-  const characterIdx = characters.findIndex((c) => c.id === id);
+  const character = repository.delete({ id: id });
 
-  if (characterIdx === -1) {
+  if (!character) {
     res.status(404).send("character not found").status(404);
   } else {
-    characters.splice(characterIdx, 1);
-    res.send({ message: "character deleted" }).status(200);
+    res.send({ message: "character deleted", data: character }).status(200);
   }
 });
 
