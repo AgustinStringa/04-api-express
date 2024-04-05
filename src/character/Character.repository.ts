@@ -15,14 +15,17 @@ export const characters = [
 ];
 
 export class CharacterRepository implements Repository<Character> {
-  findAll(): Character[] | undefined {
-    throw new Error("Method not implemented.");
+  public findAll(): Character[] | undefined {
+    return characters;
   }
-  findOne(item: { id: string }): Character | undefined {
-    throw new Error("Method not implemented.");
+  public findOne(item: { id: string }): Character | undefined {
+    return characters.find((c) => c.id === item.id);
   }
-  add(item: Character): Character | undefined {
-    throw new Error("Method not implemented.");
+  public add(item: Character): Character | undefined {
+    //asumimos que el item es una entrada ya sanitizada.
+    //la tarea de sanitizacion no corresponde a esta capa
+    characters.push(item);
+    return item;
   }
   update(item: Character): Character | undefined {
     throw new Error("Method not implemented.");
