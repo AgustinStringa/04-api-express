@@ -34,4 +34,43 @@ characters_router.post("/", sanitizeCharacterInput, (req, res) => {
   res.send({ message: "character created", data: newCharacter }).status(201);
 });
 
+characters_router.put("/:id", sanitizeCharacterInput, (req, res) => {
+  const characterIdx = characters.findIndex((c) => c.id === req.params.id);
+  if (characterIdx === -1) {
+    res.send({ message: "character not found" }).status(404);
+  } else {
+    characters[characterIdx] = {
+      ...characters[characterIdx],
+      ...req.body.sanitizedInput,
+    };
+    res
+      .status(200)
+      .send({ message: "character updated", data: characters[characterIdx] });
+  }
+});
+
+characters_router.patch("/:id", sanitizeCharacterInput, (req, res) => {
+  const characterIdx = characters.findIndex((c) => c.id === req.params.id);
+  if (characterIdx === -1) {
+    res.send({ message: "character not found" }).status(404);
+  } else {
+    Object.assign(characters[characterIdx], req.body.sanitizedInput);
+    res
+      .status(200)
+      .send({ message: "character updated", data: characters[characterIdx] });
+  }
+});
+
+characters_router.delete("/:id", (req, res) => {
+  const { id } = req.params;
+  const characterIdx = characters.findIndex((c) => c.id === id);
+
+  if (characterIdx === -1) {
+    res.status(404).send("character not found").status(404);
+  } else {
+    characters.splice(characterIdx, 1);
+    res.send({ message: "character deleted" }).status(200);
+  }
+});
+
 export { characters_router };
