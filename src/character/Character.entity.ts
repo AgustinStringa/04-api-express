@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import crypto from "node:crypto";
 
 export class Character {
@@ -9,6 +10,7 @@ export class Character {
     public mana: number,
     public attack: number,
     public items: string[],
-    public id = crypto.randomUUID()
+    public id = crypto.randomUUID(),
+    public _id?: ObjectId
   ) {}
 }

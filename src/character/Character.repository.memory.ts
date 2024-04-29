@@ -1,8 +1,7 @@
 import { Repository } from "../shared/repository.js";
 import { Character } from "./Character.entity.js";
-import { db } from "../shared/db/db.js";
-import { ObjectId } from "mongodb";
-export const charactersArray = [
+
+export const characters = [
   new Character(
     "Darth Vader",
     "Sith",
@@ -15,40 +14,35 @@ export const charactersArray = [
   ),
 ];
 
-//declarado aqui fuera de la clase para que no sea modificable
-const characters = db.collection<Character>("characters");
-
 export class CharacterRepository implements Repository<Character> {
   public async findAll(): Promise<Character[] | undefined> {
-    return await characters.find({}).toArray();
+    return await characters;
   }
   public async findOne(item: { id: string }): Promise<Character | undefined> {
-    return (
-      (await characters.findOne({ _id: new ObjectId(item.id) })) || undefined
-    );
+    return characters.find((c) => c.id === item.id);
   }
   public async add(item: Character): Promise<Character | undefined> {
     //asumimos que el item es una entrada ya sanitizada.
     //la tarea de sanitizacion no corresponde a esta capa
-    charactersArray.push(item);
+    characters.push(item);
     return item;
   }
   async update(item: Character): Promise<Character | undefined> {
-    const characterIdx = charactersArray.findIndex((c) => c.id === item.id);
+    const characterIdx = characters.findIndex((c) => c.id === item.id);
     if (characterIdx !== -1) {
-      charactersArray[characterIdx] = {
-        ...charactersArray[characterIdx],
+      characters[characterIdx] = {
+        ...characters[characterIdx],
         ...item,
       };
-      return charactersArray[characterIdx];
+      return characters[characterIdx];
     }
   }
   async delete(item: { id: string }): Promise<Character | undefined> {
-    const characterIdx = charactersArray.findIndex((c) => c.id === item.id);
+    const characterIdx = characters.findIndex((c) => c.id === item.id);
 
     if (characterIdx !== -1) {
-      const characterToRemove = charactersArray[characterIdx];
-      charactersArray.splice(characterIdx, 1);
+      const characterToRemove = characters[characterIdx];
+      characters.splice(characterIdx, 1);
       return characterToRemove;
     }
   }

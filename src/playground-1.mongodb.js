@@ -9,7 +9,15 @@
 // For more documentation on playgrounds please refer to
 // https://www.mongodb.com/docs/mongodb-vscode/playgrounds/
 
+import { ObjectId } from "mongodb";
+
 // Select the database to use.
 use('sample_mflix');
 
 db.getCollection("users").find({});
+
+db.characters.updateOne({ name: 'Obi-Wan Kenoby' }, { $set: { name: 'Obi-Wan Kenobi' } })
+db.characters.find({ mana: { $gt: 30 } }) //greater than
+db.characters.find({}, { name: 1, _id: 0 }) //segundo param, los attr a mostrar
+
+db.characters.find({ _id: ObjectId('662ff84ed6d76f2e2846b799') });

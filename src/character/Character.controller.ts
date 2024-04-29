@@ -5,30 +5,31 @@ import { Character } from "./Character.entity.js";
 const repository = new CharacterRepository();
 
 const controller = {
-  findAll: function (req: Request, res: Response) {
-    res.json({ data: repository.findAll() });
+  findAll: async function (req: Request, res: Response) {
+    res.json({ data: await repository.findAll() });
   },
-  findOne: function (req: Request, res: Response) {
+  findOne: async function (req: Request, res: Response) {
     const { id } = req.params;
-    const character = repository.findOne({ id: id });
+    //try-catch??
+    const character = await repository.findOne({ id: id });
     if (!character) {
       res.status(404).send({ message: "character not found" });
     } else {
       res.json({ data: character }).status(200);
     }
   },
-  add: function (req: Request, res: Response) {
+  add: async function (req: Request, res: Response) {
     const { name, characterClass, level, hp, mana, attack, items } =
       req.body.sanitizedInput;
-    const newCharacter = repository.add(
+    const newCharacter = await repository.add(
       new Character(name, characterClass, level, hp, mana, attack, items)
     );
     //another common response is id
     res.json({ message: "character created", data: newCharacter }).status(201);
   },
-  delete: function (req: Request, res: Response) {
+  delete: async function (req: Request, res: Response) {
     const { id } = req.params;
-    const character = repository.delete({ id: id });
+    const character = await repository.delete({ id: id });
 
     if (!character) {
       res.status(404).send("character not found").status(404);
@@ -36,9 +37,9 @@ const controller = {
       res.json({ message: "character deleted", data: character }).status(200);
     }
   },
-  update: function (req: Request, res: Response) {
+  update: async function (req: Request, res: Response) {
     req.body.sanitizedInput.id = req.params.id;
-    const character = repository.update(req.body.sanitizedInput);
+    const character = await repository.update(req.body.sanitizedInput);
     if (!character) {
       res.send({ message: "character not found" }).status(404);
     } else {

@@ -1,5 +1,5 @@
 import express from "express";
-import { db } from "./shared/db.js";
+import { db } from "./shared/db/db.js";
 import { routerApi } from "./routes/index.js";
 
 const PORT = 3000;
