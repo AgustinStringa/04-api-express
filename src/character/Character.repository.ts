@@ -48,8 +48,10 @@ export class CharacterRepository implements Repository<Character> {
     );
   }
   public async remove(item: { id: string }): Promise<Character | undefined> {
-    const chr = await characters.findOne({ _id: new ObjectId(item.id) });
-    await characters.deleteOne({ _id: new ObjectId(item.id) });
-    return chr || undefined;
+    // const chr = await characters.findOne({ _id: new ObjectId(item.id) });
+    return (
+      (await characters.findOneAndDelete({ _id: new ObjectId(item.id) })) ||
+      undefined
+    );
   }
 }
