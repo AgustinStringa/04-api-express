@@ -18,5 +18,8 @@
     "express": "4.19.2",
     "tsc-watch": "6.2.0",
     "typescript": "5.4.3"
+  },
+  "dependencies": {
+    "mongodb": "6.5.0"
   }
 }
