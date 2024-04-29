@@ -30,26 +30,26 @@ export class CharacterRepository implements Repository<Character> {
   public async add(item: Character): Promise<Character | undefined> {
     //asumimos que el item es una entrada ya sanitizada.
     //la tarea de sanitizacion no corresponde a esta capa
-    charactersArray.push(item);
-    return item;
+    item._id = (await characters.insertOne(item)).insertedId;
+    return item || undefined;
   }
-  async update(item: Character): Promise<Character | undefined> {
-    const characterIdx = charactersArray.findIndex((c) => c.id === item.id);
-    if (characterIdx !== -1) {
-      charactersArray[characterIdx] = {
-        ...charactersArray[characterIdx],
-        ...item,
-      };
-      return charactersArray[characterIdx];
-    }
+  public async update(item: Character): Promise<Character | undefined> {
+    const { id, ...characterInput } = item;
+    return (
+      (await characters.findOneAndUpdate(
+        { _id: new ObjectId(item.id) },
+        {
+          $set: {
+            ...characterInput,
+          },
+        },
+        { returnDocument: "after" }
+      )) || undefined
+    );
   }
-  async delete(item: { id: string }): Promise<Character | undefined> {
-    const characterIdx = charactersArray.findIndex((c) => c.id === item.id);
-
-    if (characterIdx !== -1) {
-      const characterToRemove = charactersArray[characterIdx];
-      charactersArray.splice(characterIdx, 1);
-      return characterToRemove;
-    }
+  public async remove(item: { id: string }): Promise<Character | undefined> {
+    const chr = await characters.findOne({ _id: new ObjectId(item.id) });
+    await characters.deleteOne({ _id: new ObjectId(item.id) });
+    return chr || undefined;
   }
 }

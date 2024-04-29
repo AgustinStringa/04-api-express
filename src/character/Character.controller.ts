@@ -6,7 +6,8 @@ const repository = new CharacterRepository();
 
 const controller = {
   findAll: async function (req: Request, res: Response) {
-    res.json({ data: await repository.findAll() });
+    const data = await repository.findAll();
+    res.json({ length: data?.length, data: data });
   },
   findOne: async function (req: Request, res: Response) {
     const { id } = req.params;
@@ -29,7 +30,7 @@ const controller = {
   },
   delete: async function (req: Request, res: Response) {
     const { id } = req.params;
-    const character = await repository.delete({ id: id });
+    const character = await repository.remove({ id: id });
 
     if (!character) {
       res.status(404).send("character not found").status(404);

@@ -37,7 +37,7 @@ export class CharacterRepository implements Repository<Character> {
       return characters[characterIdx];
     }
   }
-  async delete(item: { id: string }): Promise<Character | undefined> {
+  async remove(item: { id: string }): Promise<Character | undefined> {
     const characterIdx = characters.findIndex((c) => c.id === item.id);
 
     if (characterIdx !== -1) {
