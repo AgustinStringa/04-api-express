@@ -9,8 +9,8 @@ const PORT = 3000;
 const app = express();
 app.use(express.json());
 
-app.get("/users", async (req, res, err) => {
-  const mongo = await db.collection("users");
+app.get("/characters", async (req, res, err) => {
+  const mongo = await db.collection("characters");
   const users = await mongo.find({}).limit(15).toArray();
   console.log(users);
   res.json(users);
@@ -40,6 +40,18 @@ app.post(
       new Character(name, characterClass, level, hp, mana, attack, items)
     );
     res.send(newCharacter);
+  }
+);
+
+app.patch(
+  "/mysql/characters/:id",
+  sanitizeCharacterInput,
+  async (req, res, err) => {
+    const { id } = req.params;
+    const updateData = req.body.sanitizedInput;
+    const repo = new CharacterRepository();
+    const character = await repo.update({ id, ...updateData });
+    res.send(character);
   }
 );
 
