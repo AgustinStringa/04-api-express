@@ -45,6 +45,15 @@ const controller = {
   },
   delete: async function (req: Request, res: Response) {
     try {
+      const id = Number.parseInt(req.params.id);
+      const characterClass = em.getReference(CharacterClass, id);
+      // await em.remove() --> si sigo haciendo operaciones
+      // await em.removeFlush() --> si es la unica operacion
+      await em.removeAndFlush(characterClass);
+      //con remove puedo suscribirme a los cambios para ver que ocurre
+      // gralmente en los ORM remove permite suscribirse, delete no
+      // res.status(204).send();
+      res.status(200).send({ message: "characterclass removed" });
     } catch (error) {
       res.status(500).json({ message: "not implemented" });
     }
