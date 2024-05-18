@@ -23,7 +23,7 @@ const controller = {
   findOne: async function (req: Request, res: Response) {
     try {
       const id = Number.parseInt(req.params.id);
-      const character = await em.find(
+      const character = await em.findOneOrFail(
         Character,
         { id },
         { populate: ["characterClass", "items"] }
