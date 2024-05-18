@@ -11,6 +11,9 @@ app.use(express.json());
 app.use((req, res, next) => {
   //.em -> entity manager. Abstraccion que permite manejar todas las entidades definidas
   // se manejan uniforme y desde un mismo punto.
+  /**
+   * hace que cuando un endpoint tiene varias modificaciones, se realizan en la misma transaccion
+   */
   RequestContext.create(orm.em, next);
 });
 await syncnSchema();

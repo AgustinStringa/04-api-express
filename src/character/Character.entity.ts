@@ -25,7 +25,7 @@ export class Character extends BaseEntity {
   mana!: number;
 
   @Property({ nullable: false })
-  attack!: string;
+  attack!: number;
 
   //el modo en que se especifica la relacion puede entederse como "mirando el diagrama desde que lado estoy"
   @ManyToOne(() => CharacterClass, { nullable: false })

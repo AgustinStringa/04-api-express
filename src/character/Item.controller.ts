@@ -50,7 +50,7 @@ const controller = {
       await em.removeAndFlush(item);
       res.status(200).send({ message: "Item removed" });
     } catch (error) {
-      res.status(500).json({ message: "not implemented" });
+      res.status(500).json({ message: "internal error" });
     }
   },
   update: async function (req: Request, res: Response) {
@@ -62,7 +62,7 @@ const controller = {
       res.status(200).send({ message: "Item updated successfully" });
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: "not implemented" });
+      res.status(500).json({ message: "internal error" });
     }
   },
 };
