@@ -10,6 +10,7 @@ const controller = {
       const characterclasses = await em.find(CharacterClass, {});
       res.status(200).json({
         message: "find all character classes",
+        length: characterclasses.length,
         data: characterclasses,
       });
     } catch (error) {
@@ -35,7 +36,7 @@ const controller = {
       //flush() se ejecuta una sola vez en el caso de uso.
       //allí, se ejecutan todas las op de la base de datos
       res.status(201).json({
-        message: "created",
+        message: "characterclass created",
         data: newCharacterClass,
       });
     } catch (error) {
@@ -43,10 +44,35 @@ const controller = {
     }
   },
   delete: async function (req: Request, res: Response) {
-    res.status(500).json({ message: "not implemented" });
+    try {
+    } catch (error) {
+      res.status(500).json({ message: "not implemented" });
+    }
   },
   update: async function (req: Request, res: Response) {
-    res.status(500).json({ message: "not implemented" });
+    try {
+      //una opcion es buscar el objeto y modificarlo
+      /***OPCION 1 */
+      //const id = Number.parseInt(req.params.id);
+      //const characterclass = await em.findOneOrFail(Characterclass, {id})
+      //characterClass.name = req.body.name. Lo mismo con demas props
+      // o usar directamente em.assign(CharacterClass, req.body)
+      //await em.flush()
+      //otra opcion es usar getReference.
+
+      /***OPCION 2 */
+
+      /**la opcion 2 realiza un solo acceso a la base de datos. */
+      /**en caso de querer retornar la lista de characters, sería necesario otro acceso. */
+      const id = Number.parseInt(req.params.id);
+      const characterClass = em.getReference(CharacterClass, id);
+      em.assign(characterClass, req.body);
+      await em.flush();
+      res.status(200).send({ message: "characterclass updated successfully" });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "not implemented" });
+    }
   },
 };
 
