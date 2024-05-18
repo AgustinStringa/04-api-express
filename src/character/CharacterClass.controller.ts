@@ -20,7 +20,9 @@ const controller = {
   findOne: async function (req: Request, res: Response) {
     const { id } = req.params;
     try {
-      const characterclass = await em.find(CharacterClass, { id: Number(id) });
+      const characterclass = await em.find(CharacterClass, {
+        id: Number.parseInt(id),
+      });
       res.status(200).json({
         message: "find one characterClass",
         data: characterclass,
