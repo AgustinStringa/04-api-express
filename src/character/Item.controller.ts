@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Item } from "./Item.entity.js";
 import { orm } from "../shared/db/orm.js";
+import { NotFoundError } from "@mikro-orm/core";
 const em = orm.em;
 em.getRepository(Item);
 
@@ -20,13 +21,17 @@ const controller = {
   findOne: async function (req: Request, res: Response) {
     const { id } = req.params;
     try {
-      const item = await em.find(Item, { id: Number.parseInt(id) });
+      const item = await em.findOneOrFail(Item, { id: Number.parseInt(id) });
       res.status(200).json({
         message: "find one Item",
         data: item,
       });
     } catch (error) {
-      res.status(500).json({ message: "internal error" });
+      if (error instanceof NotFoundError) {
+        res.status(404).json({ message: `${error.message}` });
+      } else {
+        res.status(500).json({ message: "internal error" });
+      }
     }
   },
   add: async function (req: Request, res: Response) {

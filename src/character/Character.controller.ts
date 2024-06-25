@@ -1,6 +1,7 @@
 import e, { Request, Response } from "express";
 import { Character } from "./Character.entity.js";
 import { orm } from "../shared/db/orm.js";
+import { NotFoundError } from "@mikro-orm/core";
 const em = orm.em;
 em.getRepository(Character);
 const controller = {
@@ -32,7 +33,11 @@ const controller = {
       );
       res.status(200).send({ message: "find one character", data: character });
     } catch (error) {
-      res.status(500).json({ message: "internal error" });
+      if (error instanceof NotFoundError) {
+        res.status(404).json({ message: `${error.message}` });
+      } else {
+        res.status(500).json({ message: "internal error" });
+      }
     }
   },
   add: async function (req: Request, res: Response) {
@@ -84,7 +89,11 @@ const controller = {
       await em.flush();
       res.status(200).send({ message: "character updated successfully" });
     } catch (error: any) {
-      res.status(500).json({ message: error.message });
+      if (error instanceof NotFoundError) {
+        res.status(404).json({ message: `${error.message}` });
+      } else {
+        res.status(500).json({ message: "internal error" });
+      }
     }
   },
 };

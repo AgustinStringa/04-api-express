@@ -16,7 +16,7 @@ app.use((req, res, next) => {
    */
   RequestContext.create(orm.em, next);
 });
-await syncnSchema();
+await syncnSchema(); // never in production
 //antes de las rutas
 
 routerApi(app);

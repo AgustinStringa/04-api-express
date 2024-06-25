@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { CharacterClass } from "./CharacterClass.entity.js";
 import { orm } from "../shared/db/orm.js";
+import { NotFoundError } from "@mikro-orm/core";
 const em = orm.em;
 em.getRepository(CharacterClass);
 
@@ -18,17 +19,21 @@ const controller = {
     }
   },
   findOne: async function (req: Request, res: Response) {
-    const { id } = req.params;
+    const id = Number.parseInt(req.params.id);
     try {
-      const characterclass = await em.find(CharacterClass, {
-        id: Number.parseInt(id),
+      const characterclass = await em.findOneOrFail(CharacterClass, {
+        id: id,
       });
       res.status(200).json({
         message: "find one characterClass",
         data: characterclass,
       });
     } catch (error) {
-      res.status(500).json({ message: "internal error" });
+      if (error instanceof NotFoundError) {
+        res.status(404).json({ message: `${error.message}` });
+      } else {
+        res.status(500).json({ message: "internal error" });
+      }
     }
   },
   add: async function (req: Request, res: Response) {
@@ -57,7 +62,7 @@ const controller = {
       // res.status(204).send();
       res.status(200).send({ message: "characterclass removed" });
     } catch (error) {
-      res.status(500).json({ message: "not implemented" });
+      res.status(500).json({ message: "internal error" });
     }
   },
   update: async function (req: Request, res: Response) {
@@ -82,7 +87,7 @@ const controller = {
       res.status(200).send({ message: "characterclass updated successfully" });
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: "not implemented" });
+      res.status(500).json({ message: "internal error" });
     }
   },
 };
